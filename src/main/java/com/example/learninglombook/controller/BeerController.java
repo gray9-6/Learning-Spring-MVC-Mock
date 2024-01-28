@@ -17,33 +17,34 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/api/v1/beer")
 public class BeerController {
 
+    public static final String BEER_PATH = "/api/v1/beer";
+    public static final String BEER_PATH_ID = "/{beerId}";
 
     private final BeerService beerService;
 
 
-        @PatchMapping("/patch_beerId/{beerId}")
+    @PatchMapping(BEER_PATH+"/patch_beerId"+BEER_PATH_ID)
     public ResponseEntity updateBeerPatchById(@PathVariable UUID beerId,@RequestBody Beer beer){
         beerService.updateBeerPatchById(beerId,beer);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("/deleteBeer_byId/{beerId}")
+    @DeleteMapping(BEER_PATH +"/deleteBeer_byId"+BEER_PATH_ID)
     public ResponseEntity deleteByBeerId(@PathVariable UUID beerId){
         beerService.deleteByBeerId(beerId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/updateBeer_byId/{beerId}")
+    @PutMapping(BEER_PATH+"/updateBeer_byId"+BEER_PATH_ID)
     public ResponseEntity updateBeerById(@PathVariable UUID beerId,@RequestBody Beer beer){
         beerService.updateBeerById(beerId,beer);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 
-    @PostMapping("/addBeer")
+    @PostMapping(BEER_PATH+"/addBeer")
 //    @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity addBeer(@RequestBody Beer beer){
         Beer savedBeer = beerService.addBeer(beer);
@@ -54,14 +55,14 @@ public class BeerController {
         return new ResponseEntity<>(headers ,HttpStatus.CREATED);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping(BEER_PATH)
     public List<Beer> getBeerList(){
         log.debug("getting all the beer list in controller");
         return beerService.getBeerList();
     }
 
 
-    @RequestMapping(value = "/getBeerById/{beerId}",method = RequestMethod.GET)
+    @GetMapping(BEER_PATH+"/getBeerById"+BEER_PATH_ID)
     public Beer getBeerById(@PathVariable UUID beerId){
         log.debug("Get Beer By id in the controller layer");
         return  beerService.getBeerById(beerId);
