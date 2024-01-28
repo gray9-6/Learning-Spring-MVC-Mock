@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LearningSpringMVCMockApplication {
+public class LearningSpringMVCApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(LearningSpringMVCMockApplication.class, args);
+		SpringApplication.run(LearningSpringMVCApplication.class, args);
 	}
 
 }
