@@ -12,11 +12,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
 
+import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BeerController.class)
 class BeerControllerTest {
@@ -32,11 +32,21 @@ class BeerControllerTest {
     void getBeerById() throws Exception {
         Beer testBeer = beerServiceImplementation.getBeerList().get(0);
 
-        given(beerService.getBeerById(any(UUID.class))).willReturn(testBeer);
+        // means , humne testBeer ki id di hao , to ye hume test beer ka object hi return karega
+        given(beerService.getBeerById(testBeer.getId())).willReturn(testBeer);
 
-        mockMvc.perform(get("/api/v1/beer/getBeerById/" + UUID.randomUUID())
+        // mock mvc is performing the get operation
+        mockMvc.perform(get("/api/v1/beer/getBeerById/" + testBeer.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id",is(testBeer.getId().toString())))
+//                .andExpect(jsonPath("$.beerName",is(testBeer.getBeerName()+"foo"))); // fail
+                .andExpect(jsonPath("$.beerName",is(testBeer.getBeerName())));
+        // means jo json aayega usme beerName root document ke name name se match karna chahiye (i.e test beer) and same goes for id
     }
 }
+
+/*
+   $.id :- means, from the root of the document
+ */
