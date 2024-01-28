@@ -1,6 +1,8 @@
 package com.example.learninglombook.controller;
 
+import com.example.learninglombook.model.Beer;
 import com.example.learninglombook.service.BeerService;
+import com.example.learninglombook.service.impl.BeerServiceImplementation;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -10,7 +12,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BeerController.class)
@@ -21,10 +26,17 @@ class BeerControllerTest {
     @MockBean
     BeerService beerService;
 
+    BeerServiceImplementation beerServiceImplementation = new BeerServiceImplementation();
+
     @Test
     void getBeerById() throws Exception {
+        Beer testBeer = beerServiceImplementation.getBeerList().get(0);
+
+        given(beerService.getBeerById(any(UUID.class))).willReturn(testBeer);
+
         mockMvc.perform(get("/api/v1/beer/getBeerById/" + UUID.randomUUID())
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 }
