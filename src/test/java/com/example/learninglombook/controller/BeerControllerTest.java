@@ -10,10 +10,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -26,7 +24,19 @@ class BeerControllerTest {
     @MockBean
     BeerService beerService;
 
-    BeerServiceImplementation beerServiceImplementation = new BeerServiceImplementation();
+    BeerServiceImplementation beerServiceImplementation = new BeerServiceImplementation();   // implementation class
+
+    @Test
+    void testListBeers() throws Exception {
+
+        given(beerService.getBeerList()).willReturn(beerServiceImplementation.getBeerList());
+
+        mockMvc.perform(get("/api/v1/beer/")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())  // if we are commenting this , then test case is getting passed, but is should be passed without commenting this
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()",is(3)));
+    }
 
     @Test
     void getBeerById() throws Exception {
